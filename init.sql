@@ -2,17 +2,17 @@ CREATE DATABASE IF NOT EXISTS box_delivery;
 
 USE box_delivery;
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
-    code VARCHAR(50) NOT NULL UNIQUE,
-    role ENUM('supplier', 'recipient') NOT NULL DEFAULT 'recipient'
+    code VARCHAR(50) NOT NULL,
+    type ENUM('supplier', 'recipient') NOT NULL DEFAULT 'recipient'
 );
 
 CREATE TABLE IF NOT EXISTS box (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    identifier VARCHAR(50) NOT NULL UNIQUE
-    -- address VARCHAR(255) NULL,
+    identifier VARCHAR(50) NOT NULL UNIQUE,
+    address VARCHAR(255) NULL
 );
 
 CREATE TABLE IF NOT EXISTS shelf (
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS shelf (
     user_id INT NULL,
     status ENUM('available', 'in_use') NOT NULL DEFAULT 'available',
     FOREIGN KEY (box_id) REFERENCES box(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS package (
@@ -30,10 +30,10 @@ CREATE TABLE IF NOT EXISTS package (
     user_id INT NULL,
     pin VARCHAR(10) NOT NULL,
     FOREIGN KEY (shelf_id) REFERENCES shelf(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
-INSERT INTO users (username, code, role) VALUES
+INSERT INTO user (username, code, type) VALUES
 ('supplier1', 'SUP123', 'supplier'),
 ('recipient1', 'REC123', 'recipient');
 

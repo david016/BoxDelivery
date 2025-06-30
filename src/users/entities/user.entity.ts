@@ -1,6 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+export enum UserType {
+  SUPPLIER = 'supplier',
+  RECIPIENT = 'recipient',
+}
+
 @Entity()
 export class User {
   @ApiProperty({ example: 1 })
@@ -12,17 +17,22 @@ export class User {
   username: string;
 
   @ApiProperty({ example: '12345' })
+  @Column()
   code: string;
 
   @ApiProperty({ example: 'supplier' })
-  @Column()
-  type: 'supplier' | 'recipient';
+  @Column({
+    type: 'enum',
+    enum: UserType,
+    default: UserType.RECIPIENT,
+  })
+  type: UserType;
 
   constructor(
     id: number,
     username: string,
     code: string,
-    type: 'supplier' | 'recipient',
+    type: UserType = UserType.RECIPIENT,
   ) {
     this.id = id;
     this.username = username;
